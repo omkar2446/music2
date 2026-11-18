@@ -5,7 +5,7 @@
  * maps its own response objects into them (see `src/providers/<name>/*.mapper.ts`).
  */
 
-export type MusicSource = "audius";
+export type MusicSource = "audius" | "jiosaavn";
 
 /**
  * Artwork in the sizes providers usually offer. `mirrors` are alternative
@@ -123,6 +123,7 @@ export function globalId(source: MusicSource, providerId: string): string {
 /** Display names for attribution ("Open on Audius"); safe to import client-side. */
 export const SOURCE_NAMES: Record<MusicSource, string> = {
   audius: "Audius",
+  jiosaavn: "JioSaavn",
 };
 
 /** Strips detail-only fields so persisted snapshots (queue, likes) stay small. */

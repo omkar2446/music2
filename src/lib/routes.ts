@@ -15,6 +15,7 @@ const path = (kind: string, id: string) => {
 export const routes = {
   home: "/",
   search: (query?: string) => (query ? `/search?q=${encodeURIComponent(query)}` : "/search"),
+  indian: "/indian",
   library: "/library",
   liked: "/liked",
   history: "/history",

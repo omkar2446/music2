@@ -43,7 +43,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
       </head>
-      <body className="bg-signal-glow min-h-dvh bg-fixed">
+      {/* Browser extensions may inject body attributes before hydration. */}
+      <body className="bg-signal-glow min-h-dvh bg-fixed" suppressHydrationWarning>
         <a
           href="#main"
           className="bg-primary text-primary-foreground sr-only z-[70] rounded-md px-4 py-2 font-semibold focus:not-sr-only focus:fixed focus:top-2 focus:left-2"

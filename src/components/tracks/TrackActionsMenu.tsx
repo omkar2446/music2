@@ -143,7 +143,7 @@ export function TrackActionsMenu({
         <MenuItem onSelect={() => void shareLink(routes.track(track.id), track.title)}>
           <Share2 /> Share
         </MenuItem>
-        {track.externalUrl && (
+        {track.externalUrl && track.source !== "jiosaavn" && (
           <MenuItem
             onSelect={() => window.open(track.externalUrl, "_blank", "noopener,noreferrer")}
           >

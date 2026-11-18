@@ -149,7 +149,7 @@ function RecentSearches({ onPick }: { onPick: (q: string) => void }) {
   );
 }
 
-function Results({ results }: { results: SearchResults }) {
+export function SearchResultsContent({ results }: { results: SearchResults }) {
   const top = pickTopResult(results);
   const hasAnything =
     results.tracks.length +
@@ -320,7 +320,7 @@ export function SearchView() {
             action={<Button onClick={search.retry}>Try again</Button>}
           />
         )}
-        {search.status === "success" && <Results results={search.results} />}
+        {search.status === "success" && <SearchResultsContent results={search.results} />}
       </div>
     </div>
   );

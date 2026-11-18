@@ -13,6 +13,10 @@ export const musicService = {
     return getProvider(DEFAULT_SOURCE).search(query, limit);
   },
 
+  searchWith(source: MusicSource | string, query: string, limit?: number): Promise<SearchResults> {
+    return getProvider(source).search(query, limit);
+  },
+
   getTrending(options?: { genre?: string; underground?: boolean; limit?: number }) {
     return getProvider(DEFAULT_SOURCE).getTrending(options);
   },

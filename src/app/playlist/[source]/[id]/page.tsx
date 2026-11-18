@@ -34,12 +34,16 @@ export default async function PlaylistPage({ params }: Props) {
         description={playlist.description}
         meta={
           <span className="flex flex-wrap items-center justify-center gap-x-1.5 sm:justify-start">
-            <Link
-              href={routes.artist(playlist.owner.id)}
-              className="text-foreground font-semibold hover:underline"
-            >
-              {playlist.owner.name}
-            </Link>
+            {playlist.source === "jiosaavn" ? (
+              <span className="text-foreground font-semibold">{playlist.owner.name}</span>
+            ) : (
+              <Link
+                href={routes.artist(playlist.owner.id)}
+                className="text-foreground font-semibold hover:underline"
+              >
+                {playlist.owner.name}
+              </Link>
+            )}
             <span>· {pluralize(tracks.length, "song")}</span>
             {totalSeconds > 0 && <span>· {formatLongDuration(totalSeconds)}</span>}
             {playlist.playCount ? <span>· {formatCount(playlist.playCount)} plays</span> : null}
@@ -54,7 +58,7 @@ export default async function PlaylistPage({ params }: Props) {
       ) : (
         <EmptyState title="This playlist is empty" />
       )}
-      {playlist.externalUrl && (
+      {playlist.externalUrl && playlist.source !== "jiosaavn" && (
         <p className="text-subtle mt-8 text-xs">
           <a
             href={playlist.externalUrl}

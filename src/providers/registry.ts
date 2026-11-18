@@ -1,9 +1,11 @@
 import type { MusicSource } from "@/types/music";
 import { AudiusProvider } from "./audius/audius.provider";
+import { JioSaavnProvider } from "./jiosaavn/jiosaavn.provider";
 import { ProviderError, type MusicProvider } from "./types";
 
 const providers: Record<MusicSource, MusicProvider> = {
   audius: new AudiusProvider(),
+  jiosaavn: new JioSaavnProvider(),
 };
 
 /** Provider used for catalog-wide discovery (home, trending, search). */

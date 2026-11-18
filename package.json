@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "node scripts/music-stack.mjs dev",
+    "build": "node scripts/music-stack.mjs build",
+    "start": "node scripts/music-stack.mjs start",
+    "install:all": "node scripts/music-stack.mjs install",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",

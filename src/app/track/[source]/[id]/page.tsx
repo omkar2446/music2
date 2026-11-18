@@ -98,7 +98,7 @@ export default async function TrackPage({ params }: Props) {
         </section>
       )}
 
-      {track.externalUrl && (
+        {track.externalUrl && track.source !== "jiosaavn" && (
         <p className="text-subtle text-xs">
           Streamed via {SOURCE_NAMES[track.source]} ·{" "}
           <a

@@ -118,7 +118,7 @@ export default async function ArtistPage({ params }: Props) {
         </section>
       )}
 
-      {artist.externalUrl && (
+      {artist.externalUrl && artist.source !== "jiosaavn" && (
         <p className="text-subtle text-xs">
           Profile from {SOURCE_NAMES[artist.source]} ·{" "}
           <a

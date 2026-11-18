@@ -1,6 +1,6 @@
 "use client";
 
-import { Heart, History, Home, Library, ListMusic, Plus, Search } from "lucide-react";
+import { Heart, History, Home, Library, ListMusic, Music2, Plus, Radio, Search } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import type { ComponentType } from "react";
@@ -18,6 +18,8 @@ interface NavItem {
 const PRIMARY: NavItem[] = [
   { href: routes.home, label: "Home", icon: Home },
   { href: routes.search(), label: "Search", icon: Search },
+  { href: routes.indian, label: "Indian Music", icon: Music2 },
+  { href: "/rooms", label: "Rooms", icon: Radio },
   { href: routes.library, label: "Library", icon: Library },
 ];
 

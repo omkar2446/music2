@@ -1,6 +1,6 @@
 import { connection } from "next/server";
 import { Suspense } from "react";
-import { TrendingPlaylistsShelf, TrendingTracksShelf } from "@/components/home/CatalogShelves";
+import { IndianMusicShelf, TrendingPlaylistsShelf, TrendingTracksShelf } from "@/components/home/CatalogShelves";
 import { GenreGrid } from "@/components/home/GenreGrid";
 import { Hero } from "@/components/home/Hero";
 import { ForYouShelf, RecentlyPlayedShelf } from "@/components/home/PersonalShelves";
@@ -16,16 +16,19 @@ export default async function HomePage() {
       <Hero />
       <RecentlyPlayedShelf />
       <ForYouShelf />
+      <Suspense fallback={<ShelfSkeleton title="Indian music" />}>
+        <IndianMusicShelf />
+      </Suspense>
       <Suspense fallback={<ShelfSkeleton title="Trending this week" />}>
-        <TrendingTracksShelf index={1} eyebrow="Chart" title="Trending this week" />
+        <TrendingTracksShelf index={2} eyebrow="Chart" title="Trending this week" />
       </Suspense>
       <Suspense fallback={<ShelfSkeleton title="Underground hits" />}>
-        <TrendingTracksShelf index={2} eyebrow="Rising" title="Underground hits" underground />
+        <TrendingTracksShelf index={3} eyebrow="Rising" title="Underground hits" underground />
       </Suspense>
       <Suspense fallback={<ShelfSkeleton title="Popular playlists" />}>
-        <TrendingPlaylistsShelf index={3} eyebrow="Curated" title="Popular playlists" />
+        <TrendingPlaylistsShelf index={4} eyebrow="Curated" title="Popular playlists" />
       </Suspense>
-      <GenreGrid index={4} />
+      <GenreGrid index={5} />
     </div>
   );
 }

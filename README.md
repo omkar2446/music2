@@ -42,7 +42,7 @@ No account, no ads, no downloads.
 
 Most "open-source Spotify clones" are a UI over hard-coded JSON. Cadence is a real player:
 
-- **Real music, legitimately.** It streams from [Audius](https://audius.co), an open catalog of independent artists, using its official API and stream endpoint. Nothing is ripped, proxied or re-hosted.
+- **Multi-provider listening.** Audius supplies open-catalog independent music. The Indian music shelf uses the community [JioSaavn API](https://github.com/shnwazdeveloper/shnwazdev-jiosaavn-api) service for search and playback.
 - **Provider-agnostic by design.** Audius is the first source, not the only one. Every provider implements one interface, and the UI never sees provider-specific data.
 - **Works without an account.** Likes, playlists, history and your queue live on your device and survive reloads.
 - **Its own identity.** A spec-sheet aesthetic, four themes and a tempo-driven generative visualiser, not another green-on-black clone.
@@ -94,19 +94,21 @@ Requires **Node.js 20.9+**.
 ```bash
 git clone https://github.com/dCataliNN/cadence.git
 cd cadence
-npm install
+git clone https://github.com/shnwazdeveloper/shnwazdev-jiosaavn-api.git ../shnwazdev-jiosaavn-api
+npm run install:all
 npm run dev
 ```
 
-Open <http://localhost:3000>. No API keys or secrets are required.
+Open <http://localhost:3000>. `npm run dev` starts Cadence and the JioSaavn API together; the API listens on port 3101.
 
 ### Scripts
 
 | Command             | Description                      |
 | ------------------- | -------------------------------- |
-| `npm run dev`       | Start the dev server (Turbopack) |
-| `npm run build`     | Production build                 |
-| `npm start`         | Serve the production build       |
+| `npm run install:all` | Install dependencies for Cadence and the API |
+| `npm run dev`       | Start Cadence and the API together |
+| `npm run build`     | Build the API and Cadence         |
+| `npm start`         | Serve both production processes  |
 | `npm run typecheck` | TypeScript, no emit              |
 | `npm run lint`      | ESLint                           |
 | `npm test`          | Unit tests (Vitest)              |
@@ -215,3 +217,5 @@ npm run typecheck && npm run lint && npm test && npm run build
 ## License
 
 [MIT](LICENSE) © Cadence contributors. Music remains the property of its respective artists.
+#   m u s i c 2  
+ 

@@ -4,7 +4,7 @@
  * means pasting its variables into a new block and listing it here.
  */
 export const THEMES = [
-  { id: "signal", name: "Signal", swatch: ["oklch(0.145 0.004 170)", "oklch(0.83 0.19 162)"] },
+  { id: "signal", name: "Neutral", swatch: ["oklch(0.18 0.008 250)", "oklch(0.74 0.12 250)"] },
   {
     id: "ultraviolet",
     name: "Ultraviolet",

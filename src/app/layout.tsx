@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ClientRuntime } from "@/components/layout/ClientRuntime";
-import { MobileNav, Sidebar } from "@/components/layout/Navigation";
+import { MobileNav, Sidebar, SystemBar } from "@/components/layout/Navigation";
 import { PlayerBar } from "@/components/player/PlayerBar";
 import { themeBootScript } from "@/lib/themes";
 import "./globals.css";
@@ -20,15 +20,15 @@ const siteUrl =
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: { default: "Cadence · Independent music, no gatekeepers", template: "%s · Cadence" },
+  title: { default: "OS Vibes · Independent music, no gatekeepers", template: "%s · OS Vibes" },
   description,
-  applicationName: "Cadence",
-  openGraph: { type: "website", siteName: "Cadence", title: "Cadence", description },
-  twitter: { card: "summary_large_image", title: "Cadence", description },
+  applicationName: "OS Vibes",
+  openGraph: { type: "website", siteName: "OS Vibes", title: "OS Vibes", description },
+  twitter: { card: "summary_large_image", title: "OS Vibes", description },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0c0d0d",
+  themeColor: "#171a20",
   viewportFit: "cover",
 };
 
@@ -51,11 +51,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           Skip to content
         </a>
+        <SystemBar />
         <Sidebar />
         {/* The player and runtime live outside page content, so they persist across navigation. */}
         <main
           id="main"
-          className="min-h-dvh px-4 pt-6 pb-[calc(var(--mobile-nav-height)+var(--mini-player-height)+env(safe-area-inset-bottom)+2rem)] md:pt-8 md:pr-8 md:pb-[calc(var(--player-height)+2rem)] md:pl-28 lg:pl-[calc(var(--sidebar-width)+2rem)]"
+          className="min-h-dvh px-4 pt-18 pb-[calc(var(--mobile-nav-height)+var(--mini-player-height)+env(safe-area-inset-bottom)+2rem)] md:pt-20 md:pr-8 md:pb-[calc(var(--player-height)+2rem)] md:pl-28 lg:pl-[calc(var(--sidebar-width)+2rem)]"
         >
           {children}
         </main>

@@ -1,10 +1,10 @@
 import { ImageResponse } from "next/og";
 
-export const alt = "Cadence: a free, open-source music player for independent music";
+export const alt = "OS Vibes: a free, open-source music player for independent music";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const SIGNAL = "#00e599";
+const ACCENT = "#8daaf0";
 
 export default function OpenGraphImage() {
   return new ImageResponse(
@@ -16,30 +16,36 @@ export default function OpenGraphImage() {
         flexDirection: "column",
         justifyContent: "space-between",
         padding: 72,
-        background: "#0c0d0d",
+        background: "#171a20",
         backgroundImage: "radial-gradient(rgba(228,229,231,0.13) 1.5px, transparent 1.5px)",
         backgroundSize: "28px 28px",
         color: "#e9eaec",
       }}
     >
-      <div style={{ display: "flex", alignItems: "flex-end", gap: 8 }}>
-        {[22, 34, 46].map((h, i) => (
-          <div
-            key={h}
-            style={{
-              width: 12,
-              height: h,
-              borderRadius: 3,
-              background: SIGNAL,
-              opacity: [0.55, 0.8, 1][i],
-            }}
-          />
-        ))}
-        <div style={{ marginLeft: 16, fontSize: 40, letterSpacing: -1.5 }}>cadence</div>
+      <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+          {[0, 1].map((row) => (
+            <div key={row} style={{ display: "flex", gap: 4 }}>
+              {[0, 1].map((column) => (
+                <div
+                  key={column}
+                  style={{
+                    width: 17,
+                    height: 17,
+                    borderRadius: 5,
+                    background: ACCENT,
+                    opacity: row + column === 0 ? 0.58 : row + column === 2 ? 1 : 0.78,
+                  }}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+        <div style={{ fontSize: 40, letterSpacing: -1.5, fontWeight: 600 }}>OS Vibes</div>
       </div>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <div style={{ fontSize: 22, letterSpacing: 3, color: "#9a9ca3", marginBottom: 24 }}>
-          {"// INDEPENDENT MUSIC · FREE & OPEN SOURCE"}
+          {"MUSIC WORKSPACE · FREE & OPEN SOURCE"}
         </div>
         <div
           style={{
@@ -51,7 +57,7 @@ export default function OpenGraphImage() {
           }}
         >
           <span>Sound from the open web,&nbsp;</span>
-          <span style={{ color: SIGNAL }}>no gatekeepers.</span>
+          <span style={{ color: ACCENT }}>no gatekeepers.</span>
         </div>
       </div>
     </div>,

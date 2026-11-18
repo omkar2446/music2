@@ -13,8 +13,10 @@ const apiHealthUrl = `${process.env.JIOSAAVN_API_BASE_URL ?? "http://127.0.0.1:3
 const npm = process.platform === "win32" ? "npm.cmd" : "npm";
 const mode = process.argv[2] ?? "dev";
 
-if (!existsSync(apiRoot)) {
-  throw new Error(`JioSaavn API folder not found: ${apiRoot}`);
+function requireApiRoot() {
+  if (!existsSync(apiRoot)) {
+    throw new Error(`JioSaavn API folder not found: ${apiRoot}`);
+  }
 }
 
 function run(command, args, cwd, env = process.env) {
@@ -31,12 +33,20 @@ function run(command, args, cwd, env = process.env) {
 
 async function runSequential() {
   if (mode === "install") {
+    requireApiRoot();
     await run(npm, ["ci"], projectRoot);
     await run(npm, ["ci"], apiRoot);
     return;
   }
   if (mode === "build") {
-    await run(npm, ["run", "build"], apiRoot);
+    if (process.env.VERCEL) {
+      console.info(
+        "Skipping the local JioSaavn API build on Vercel; set JIOSAAVN_API_BASE_URL to a deployed API URL to enable JioSaavn.",
+      );
+    } else {
+      requireApiRoot();
+      await run(npm, ["run", "build"], apiRoot);
+    }
     await run(process.execPath, [nextCli, "build"], projectRoot);
     return;
   }
@@ -55,6 +65,7 @@ async function isResponding(url) {
 if (mode === "install" || mode === "build") {
   await runSequential();
 } else if (mode === "dev" || mode === "start") {
+  requireApiRoot();
   if (mode === "dev" && !existsSync(apiDevCli)) {
     throw new Error("JioSaavn API dependencies are missing. Run `npm run install:all` first.");
   }

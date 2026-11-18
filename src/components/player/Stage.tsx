@@ -126,7 +126,11 @@ export function Stage() {
                   className="border-border bg-background/70 hidden min-h-0 flex-col rounded-lg border backdrop-blur-md md:flex"
                 >
                   <p className="label-mono border-border border-b px-4 py-3">
-                    <span className="text-primary">{"// "}</span>Queue
+                    <span
+                      aria-hidden
+                      className="bg-primary/70 mr-2 inline-block size-1.5 rounded-full align-middle"
+                    />
+                    Queue
                   </p>
                   <div className="min-h-0 flex-1 overflow-y-auto p-2">
                     <QueueList />

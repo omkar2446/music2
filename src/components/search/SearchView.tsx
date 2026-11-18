@@ -258,7 +258,7 @@ export function SearchView() {
     <div>
       <form
         role="search"
-        className="bg-background/90 border-border sticky top-0 z-20 -mx-4 mb-8 border-b px-4 py-4 backdrop-blur-xl md:-mx-8 md:px-8"
+        className="bg-background/90 border-border sticky top-12 z-20 -mx-4 mb-8 border-b px-4 py-4 backdrop-blur-xl md:-mx-8 md:px-8"
         onSubmit={(e) => {
           e.preventDefault();
           inputRef.current?.blur();

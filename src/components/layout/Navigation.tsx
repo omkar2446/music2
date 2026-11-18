@@ -1,6 +1,16 @@
 "use client";
 
-import { Heart, History, Home, Library, ListMusic, Music2, Plus, Radio, Search } from "lucide-react";
+import {
+  Heart,
+  History,
+  Home,
+  Library,
+  ListMusic,
+  Music2,
+  Plus,
+  Radio,
+  Search,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import type { ComponentType } from "react";
@@ -32,39 +42,61 @@ function isActive(pathname: string, href: string) {
   return href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(`${href}/`);
 }
 
-/** Three rising bars: a signal meter, echoing the app's beat-driven visuals. */
+/** A four-pane mark for the desktop workspace. */
 export function LogoMark({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={cn("size-6 shrink-0", className)} aria-hidden>
-      <rect x="3" y="13" width="4" height="8" rx="1" fill="var(--primary)" opacity="0.55" />
-      <rect x="10" y="8" width="4" height="13" rx="1" fill="var(--primary)" opacity="0.8" />
-      <rect x="17" y="3" width="4" height="18" rx="1" fill="var(--primary)" />
+      <rect x="3" y="3" width="8" height="8" rx="2" fill="var(--primary)" opacity="0.58" />
+      <rect x="13" y="3" width="8" height="8" rx="2" fill="var(--primary)" opacity="0.78" />
+      <rect x="3" y="13" width="8" height="8" rx="2" fill="var(--primary)" opacity="0.78" />
+      <rect x="13" y="13" width="8" height="8" rx="2" fill="var(--primary)" />
     </svg>
   );
 }
 
-export function Logo({ compact }: { compact?: boolean }) {
+export function Logo() {
   return (
-    <Link href="/" className="flex items-center gap-2.5 px-3" aria-label="Cadence home">
+    <Link href="/" className="flex items-center gap-2.5 px-3" aria-label="OS Vibes home">
       <LogoMark />
-      {!compact && (
-        <>
-          <span className="text-[1.0625rem] font-semibold tracking-[-0.03em]">cadence</span>
-          <span className="border-border text-subtle rounded-sm border px-1.5 py-0.5 font-mono text-[9px] tracking-wider uppercase">
-            beta
-          </span>
-        </>
-      )}
+      <span className="text-[1.0625rem] font-semibold tracking-[-0.03em]">OS Vibes</span>
+      <span className="border-border text-subtle rounded-sm border px-1.5 py-0.5 font-mono text-[9px] tracking-wider uppercase">
+        music
+      </span>
     </Link>
+  );
+}
+
+export function SystemBar() {
+  return (
+    <header className="border-border/80 bg-background/85 fixed inset-x-0 top-0 z-50 flex h-12 items-center justify-between border-b px-2 backdrop-blur-xl sm:px-4">
+      <div className="flex min-w-0 items-center">
+        <Logo />
+        <span className="border-border text-subtle hidden border-l pl-4 font-mono text-[10px] tracking-[0.12em] uppercase sm:inline">
+          Music workspace
+        </span>
+      </div>
+      <div className="flex shrink-0 items-center gap-1">
+        <Link
+          href={routes.search()}
+          aria-label="Search music"
+          title="Search music"
+          className="text-muted-foreground hover:bg-muted hover:text-foreground flex size-9 items-center justify-center rounded-lg transition-colors"
+        >
+          <Search className="size-[18px]" />
+        </Link>
+        <ThemePicker compact />
+      </div>
+    </header>
   );
 }
 
 function SectionLabel({ children }: { children: string }) {
   return (
     <p className="label-mono text-subtle px-3 pt-5 pb-2 md:sr-only lg:not-sr-only">
-      <span aria-hidden className="text-primary/70">
-        {"// "}
-      </span>
+      <span
+        aria-hidden
+        className="bg-primary/70 mr-2 inline-block size-1.5 rounded-full align-middle"
+      />
       {children}
     </p>
   );
@@ -125,16 +157,7 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="border-border bg-background fixed top-0 bottom-(--player-height) left-0 z-30 hidden w-20 flex-col border-r px-2 md:flex lg:w-(--sidebar-width)">
-      <div className="flex h-16 items-center md:justify-center lg:justify-start">
-        <span className="hidden lg:block">
-          <Logo />
-        </span>
-        <span className="lg:hidden">
-          <Logo compact />
-        </span>
-      </div>
-
+    <aside className="border-border bg-card/85 fixed top-14 bottom-[calc(var(--player-height)+1.5rem)] left-3 z-30 hidden w-20 flex-col rounded-2xl border px-2 py-2 shadow-xl shadow-black/10 backdrop-blur-xl md:flex lg:w-(--sidebar-width)">
       <SectionLabel>Browse</SectionLabel>
       <nav aria-label="Main" className="flex flex-col gap-0.5">
         {PRIMARY.map((item, i) => (
@@ -197,12 +220,6 @@ export function Sidebar() {
       </nav>
 
       <div className="border-border -mx-2 mt-2 border-t px-2 py-2">
-        <span className="hidden lg:block">
-          <ThemePicker />
-        </span>
-        <span className="flex justify-center lg:hidden">
-          <ThemePicker compact />
-        </span>
         <a
           href="https://audius.co"
           target="_blank"

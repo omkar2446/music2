@@ -107,7 +107,7 @@ Open <http://localhost:3000>. `npm run dev` starts Cadence and the JioSaavn API 
 | ------------------- | -------------------------------- |
 | `npm run install:all` | Install dependencies for Cadence and the API |
 | `npm run dev`       | Start Cadence and the API together |
-| `npm run build`     | Build the API and Cadence         |
+| `npm run build`     | Build the local API and app; Vercel builds the app only |
 | `npm start`         | Serve both production processes  |
 | `npm run typecheck` | TypeScript, no emit              |
 | `npm run lint`      | ESLint                           |
@@ -122,13 +122,14 @@ All optional. Copy `.env.example` to `.env.local` to override.
 | ----------------------------- | ----------------------- | ----------------------------------------------------------------- |
 | `NEXT_PUBLIC_AUDIUS_APP_NAME` | `Cadence`               | App name sent to Audius with every request (public, not a secret) |
 | `AUDIUS_API_BASE_URL`         | `https://api.audius.co` | Override the Audius API host                                      |
+| `JIOSAAVN_API_BASE_URL`       | `http://127.0.0.1:3101` | URL of the JioSaavn API service                                   |
 | `NEXT_PUBLIC_SITE_URL`        | Vercel production URL   | Canonical URL for social preview links                            |
 
 ### Deploy your own
 
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FdCataliNN%2Fcadence)
 
-No configuration needed. It works out of the box on Vercel's free tier.
+Audius works without extra configuration. Vercel skips building the local JioSaavn API because that sibling repository is not included in this project. To enable JioSaavn-powered features, deploy the API separately and set `JIOSAAVN_API_BASE_URL` to its public URL in the Vercel project settings. The local default (`127.0.0.1:3101`) is not reachable from Vercel functions.
 
 ## Architecture
 

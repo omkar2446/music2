@@ -18,7 +18,10 @@ export function PageHeader({
       <div className="relative flex flex-wrap items-end justify-between gap-4">
         <div className="min-w-0">
           <p className="label-mono">
-            <span className="text-primary">{"// "}</span>
+            <span
+              aria-hidden
+              className="bg-primary/70 mr-2 inline-block size-1.5 rounded-full align-middle"
+            />
             {eyebrow}
           </p>
           <h1 className="mt-3 text-[clamp(2rem,5vw,3.5rem)] leading-[1] font-medium tracking-[-0.05em]">

@@ -3,11 +3,7 @@ import { ImageResponse } from "next/og";
 export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
 
-const BARS = [
-  { height: 52, opacity: 0.55 },
-  { height: 86, opacity: 0.8 },
-  { height: 116, opacity: 1 },
-];
+const PANES = [{ opacity: 0.58 }, { opacity: 0.78 }, { opacity: 0.78 }, { opacity: 1 }];
 
 export default function AppleIcon() {
   return new ImageResponse(
@@ -16,25 +12,29 @@ export default function AppleIcon() {
         width: "100%",
         height: "100%",
         display: "flex",
-        alignItems: "flex-end",
+        alignItems: "center",
         justifyContent: "center",
-        gap: 12,
-        paddingBottom: 34,
-        background: "#0c0d0d",
+        background: "#171a20",
       }}
     >
-      {BARS.map((bar) => (
-        <div
-          key={bar.height}
-          style={{
-            width: 28,
-            height: bar.height,
-            borderRadius: 6,
-            background: "#00e599",
-            opacity: bar.opacity,
-          }}
-        />
-      ))}
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        {[PANES.slice(0, 2), PANES.slice(2)].map((row, rowIndex) => (
+          <div key={rowIndex} style={{ display: "flex", gap: 12 }}>
+            {row.map((pane, paneIndex) => (
+              <div
+                key={paneIndex}
+                style={{
+                  width: 48,
+                  height: 48,
+                  borderRadius: 12,
+                  background: "#8daaf0",
+                  opacity: pane.opacity,
+                }}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
     </div>,
     size,
   );

@@ -36,9 +36,10 @@ export function SectionHeading({
       <div className="min-w-0">
         {eyebrow && (
           <p className="label-mono mb-2">
-            <span aria-hidden className="text-primary">
-              {"// "}
-            </span>
+            <span
+              aria-hidden
+              className="bg-primary/70 mr-2 inline-block size-1.5 rounded-full align-middle"
+            />
             {eyebrow}
           </p>
         )}

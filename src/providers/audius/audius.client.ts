@@ -5,7 +5,7 @@ export const AUDIUS_API_BASE_URL = (
   process.env.AUDIUS_API_BASE_URL ?? "https://api.audius.co"
 ).replace(/\/+$/, "");
 
-export const AUDIUS_APP_NAME = process.env.NEXT_PUBLIC_AUDIUS_APP_NAME || "Cadence";
+export const AUDIUS_APP_NAME = process.env.NEXT_PUBLIC_AUDIUS_APP_NAME || "OS Vibes";
 
 const REQUEST_TIMEOUT_MS = 8_000;
 const MAX_RETRIES = 2;

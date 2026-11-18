@@ -33,12 +33,12 @@ export function IndianMusicView() {
       <PageHeader
         eyebrow="India · all languages"
         title="Indian music"
-        description="Search songs, find singers, and play Indian playlists without leaving Cadence."
+        description="Search songs, find singers, and play Indian playlists without leaving OS Vibes."
       />
 
       <form
         role="search"
-        className="border-border bg-background/90 sticky top-0 z-20 -mx-4 mb-5 border-b px-4 py-4 backdrop-blur-xl md:-mx-8 md:px-8"
+        className="border-border bg-background/90 sticky top-12 z-20 -mx-4 mb-5 border-b px-4 py-4 backdrop-blur-xl md:-mx-8 md:px-8"
         onSubmit={(event) => event.preventDefault()}
       >
         <label className="relative block max-w-2xl">

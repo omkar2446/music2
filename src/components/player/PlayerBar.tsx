@@ -76,7 +76,7 @@ function DesktopPlayer() {
   const queueOpen = useUiStore((s) => s.queueOpen);
   const hasTrack = usePlayerStore((s) => s.queue.index >= 0);
   return (
-    <div className="border-border bg-background/85 fixed inset-x-0 bottom-0 z-40 hidden h-(--player-height) grid-cols-[minmax(0,1fr)_minmax(0,2fr)_minmax(0,1fr)] items-center gap-4 border-t px-4 backdrop-blur-xl md:grid">
+    <div className="border-border bg-card/90 fixed inset-x-3 bottom-3 z-40 hidden h-(--player-height) grid-cols-[minmax(0,1fr)_minmax(0,2fr)_minmax(0,1fr)] items-center gap-4 rounded-2xl border px-4 shadow-2xl shadow-black/20 backdrop-blur-xl md:grid">
       <NowPlayingInfo />
       <div className="flex max-w-2xl min-w-0 flex-col items-center gap-0.5 justify-self-center sm:w-full">
         <PlayerControls />
@@ -109,11 +109,15 @@ function QueueDrawer() {
   return (
     <aside
       aria-label="Queue"
-      className="animate-fade-in border-border bg-background/95 fixed top-0 right-0 bottom-(--player-height) z-30 hidden w-96 flex-col border-l backdrop-blur-xl md:flex"
+      className="animate-fade-in border-border bg-card/95 fixed top-14 right-3 bottom-[calc(var(--player-height)+1.5rem)] z-30 hidden w-96 flex-col rounded-2xl border shadow-2xl shadow-black/20 backdrop-blur-xl md:flex"
     >
       <div className="border-border flex items-center justify-between border-b px-4 py-3">
         <p className="label-mono">
-          <span className="text-primary">{"// "}</span>Queue
+          <span
+            aria-hidden
+            className="bg-primary/70 mr-2 inline-block size-1.5 rounded-full align-middle"
+          />
+          Queue
         </p>
         <IconButton label="Close queue" onClick={() => useUiStore.getState().setQueueOpen(false)}>
           <X />

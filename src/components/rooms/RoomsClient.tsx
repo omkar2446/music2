@@ -40,13 +40,12 @@ export function RoomsClient({ code: roomCode, isHost }: { code: string; isHost: 
   const code = roomCode.toUpperCase();
   const router = useRouter();
   const [joinCode, setJoinCode] = useState("");
-  const [displayName, setDisplayName] = useState("");
-  const [selfId] = useState(getOrCreateClientId);
-
-  useEffect(() => {
+  const [displayName, setDisplayName] = useState(() => {
+    if (typeof window === "undefined") return "";
     const saved = sessionStorage.getItem("cadence-room-name");
-    if (saved) setDisplayName(saved);
-  }, []);
+    return saved ?? "";
+  });
+  const [selfId] = useState(getOrCreateClientId);
   const [copied, setCopied] = useState(false);
   const [listeners, setListeners] = useState(1);
   const [participants, setParticipants] = useState<Participant[]>([]);
@@ -370,7 +369,7 @@ export function RoomsClient({ code: roomCode, isHost }: { code: string; isHost: 
                 maxLength={12}
                 className="border-input bg-background focus:ring-ring min-w-0 flex-1 rounded-full border px-4 font-mono text-sm uppercase tracking-widest outline-none focus:ring-2"
               />
-              <Button variant="secondary" disabled={!joinCode.trim() || !displayName.trim()}>
+              <Button variant="secondary" type="submit" disabled={!joinCode.trim() || !displayName.trim()}>
                 Join <ArrowRight />
               </Button>
             </form>

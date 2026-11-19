@@ -5,10 +5,12 @@ import Link from "next/link";
 import { Dialog as RadixDialog } from "radix-ui";
 import { useState } from "react";
 import { LikeButton } from "@/components/tracks/LikeButton";
+import { EqualizerIcon } from "@/components/tracks/TrackList";
 import { TrackActionsMenu } from "@/components/tracks/TrackActionsMenu";
 import { Artwork } from "@/components/ui/Artwork";
 import { IconButton } from "@/components/ui/Button";
 import { SignalField } from "@/components/visual/SignalField";
+import { cn } from "@/lib/cn";
 import { formatDuration } from "@/lib/format";
 import { routes } from "@/lib/routes";
 import { shareLink } from "@/lib/share";
@@ -46,6 +48,7 @@ function SpecSheet({ track }: { track: Track }) {
 export function Stage() {
   const open = useUiStore((s) => s.nowPlayingOpen);
   const track = usePlayerStore(selectCurrentTrack);
+  const isPlaying = usePlayerStore((s) => s.isPlaying);
   const [showQueue, setShowQueue] = useState(false);
   const close = () => useUiStore.getState().setNowPlayingOpen(false);
 
@@ -73,8 +76,14 @@ export function Stage() {
                   </IconButton>
                 </RadixDialog.Close>
                 <RadixDialog.Title className="label-mono flex items-center gap-2">
-                  <span className="bg-primary size-1.5 rounded-full" aria-hidden />
-                  {showQueue ? "Up next" : "Now playing"}
+                  <span
+                    className={cn(
+                      "size-1.5 rounded-full transition-colors",
+                      isPlaying ? "bg-primary animate-pulse" : "bg-muted-foreground",
+                    )}
+                    aria-hidden
+                  />
+                  {showQueue ? "Up next" : isPlaying ? "Now playing" : "Paused"}
                 </RadixDialog.Title>
                 <TrackActionsMenu track={track} />
               </header>
@@ -87,23 +96,43 @@ export function Stage() {
                     </div>
                   ) : (
                     <div className="mx-auto w-full max-w-xl">
-                      <Artwork
-                        key={track.id}
-                        image={track.artwork}
-                        size="large"
-                        rounded="lg"
-                        eager
-                        className="border-border animate-rise-in mx-auto aspect-square w-full max-w-[min(26rem,46vh)] border shadow-[0_30px_80px_-30px_var(--primary)] md:mx-0"
-                      />
+                      <div className="relative mx-auto aspect-square w-full max-w-[min(26rem,46vh)] md:mx-0">
+                        {isPlaying && (
+                          <>
+                            <div
+                              aria-hidden
+                              className="animate-sound-ripple pointer-events-none absolute -inset-3 rounded-2xl border border-primary/35"
+                            />
+                            <div
+                              aria-hidden
+                              className="animate-music-pulse pointer-events-none absolute -inset-6 rounded-3xl bg-primary/15 blur-2xl"
+                            />
+                          </>
+                        )}
+                        <Artwork
+                          key={track.id}
+                          image={track.artwork}
+                          size="large"
+                          rounded="lg"
+                          eager
+                          className={cn(
+                            "border-border animate-rise-in relative z-10 aspect-square w-full border shadow-[0_30px_80px_-30px_var(--primary)] transition-transform duration-500",
+                            isPlaying && "scale-[1.015]",
+                          )}
+                        />
+                      </div>
                       <div className="mt-7 flex items-end gap-3">
                         <div className="min-w-0 flex-1">
-                          <Link
-                            href={routes.track(track.id)}
-                            onClick={close}
-                            className="block truncate text-2xl font-medium tracking-[-0.04em] hover:underline md:text-4xl"
-                          >
-                            {track.title}
-                          </Link>
+                          <div className="flex items-center gap-3">
+                            <Link
+                              href={routes.track(track.id)}
+                              onClick={close}
+                              className="block truncate text-2xl font-medium tracking-[-0.04em] hover:underline md:text-4xl"
+                            >
+                              {track.title}
+                            </Link>
+                            {isPlaying && <EqualizerIcon className="h-4 shrink-0" />}
+                          </div>
                           <Link
                             href={routes.artist(track.artist.id)}
                             onClick={close}

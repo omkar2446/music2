@@ -7,7 +7,10 @@ export const dynamic = 'force-dynamic';
 export function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   let origin = requestUrl.origin;
-  if (['localhost', '127.0.0.1', '::1'].includes(requestUrl.hostname)) {
+  const hostname = requestUrl.hostname.replace(/^\[|\]$/g, "");
+  const isLoopback = ["localhost", "127.0.0.1", "::1"].includes(hostname);
+  const isWildcard = ["0.0.0.0", "::"].includes(hostname);
+  if (isLoopback || isWildcard) {
     const interfaces = Object.entries(networkInterfaces()).flatMap(([name, items]) =>
       (items ?? []).map((item) => ({ name, item })),
     );
@@ -23,7 +26,8 @@ export function GET(request: NextRequest) {
       .filter(({ name, item }) => item.family === 'IPv4' && !item.internal && score(name) >= 0)
       .sort((a, b) => score(b.name) - score(a.name))
       .at(0)?.item.address;
-    if (lanAddress) origin = `${requestUrl.protocol}//${lanAddress}${requestUrl.port ? `:${requestUrl.port}` : ''}`;
+    const host = lanAddress ?? (isWildcard ? "127.0.0.1" : hostname);
+    origin = `${requestUrl.protocol}//${host}${requestUrl.port ? `:${requestUrl.port}` : ""}`;
   }
   return Response.json({ origin });
 }

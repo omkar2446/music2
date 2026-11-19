@@ -215,7 +215,7 @@ body {
   background: var(--primary);
   box-shadow: 0 0 0 4px color-mix(in oklab, var(--primary) 25%, transparent);
   opacity: 0;
-  transition: opacity 120ms;
+  transition: opacity 150ms ease, transform 150ms ease;
 }
 .range::-moz-range-thumb {
   width: 11px;
@@ -224,6 +224,7 @@ body {
   border-radius: 9999px;
   background: var(--primary);
   opacity: 0;
+  transition: opacity 150ms ease, transform 150ms ease;
 }
 .range:hover::-webkit-slider-runnable-track,
 .range:focus-visible::-webkit-slider-runnable-track {
@@ -241,28 +242,72 @@ body {
 .range:hover::-webkit-slider-thumb,
 .range:focus-visible::-webkit-slider-thumb {
   opacity: 1;
+  transform: scale(1.25);
 }
 .range:hover::-moz-range-thumb,
 .range:focus-visible::-moz-range-thumb {
   opacity: 1;
+  transform: scale(1.25);
 }
 .range:focus-visible {
   outline-offset: 4px;
 }
 
-/* Animated "now playing" equalizer bars. */
-@keyframes eq {
-  0%,
-  100% {
-    transform: scaleY(0.3);
-  }
-  50% {
-    transform: scaleY(1);
-  }
+/* Animated "now playing" equalizer bars with varied organic rhythms */
+@keyframes eq-1 {
+  0%, 100% { transform: scaleY(0.2); }
+  50% { transform: scaleY(0.95); }
 }
+@keyframes eq-2 {
+  0%, 100% { transform: scaleY(0.8); }
+  50% { transform: scaleY(0.28); }
+}
+@keyframes eq-3 {
+  0%, 100% { transform: scaleY(0.35); }
+  50% { transform: scaleY(1); }
+}
+@keyframes eq-4 {
+  0%, 100% { transform: scaleY(0.9); }
+  50% { transform: scaleY(0.25); }
+}
+
+.eq-bar-1 { transform-origin: bottom; animation: eq-1 0.75s ease-in-out infinite; }
+.eq-bar-2 { transform-origin: bottom; animation: eq-2 0.62s ease-in-out infinite; }
+.eq-bar-3 { transform-origin: bottom; animation: eq-3 0.85s ease-in-out infinite; }
+.eq-bar-4 { transform-origin: bottom; animation: eq-4 0.7s ease-in-out infinite; }
 .eq-bar {
   transform-origin: bottom;
-  animation: eq 0.9s ease-in-out infinite;
+  animation: eq-1 0.75s ease-in-out infinite;
+}
+
+/* Ambient rhythmic glow pulse for playing music artwork */
+@keyframes music-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.03);
+    opacity: 0.95;
+  }
+}
+.animate-music-pulse {
+  animation: music-pulse 3.2s ease-in-out infinite;
+}
+
+/* Expanding concentric sound ripples */
+@keyframes sound-ripple {
+  0% {
+    transform: scale(0.94);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.28);
+    opacity: 0;
+  }
+}
+.animate-sound-ripple {
+  animation: sound-ripple 2.6s cubic-bezier(0, 0.2, 0.8, 1) infinite;
 }
 
 @keyframes slide-up {

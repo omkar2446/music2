@@ -3,8 +3,10 @@
 import { ListMusic, Maximize2, X } from "lucide-react";
 import Link from "next/link";
 import { LikeButton } from "@/components/tracks/LikeButton";
+import { EqualizerIcon } from "@/components/tracks/TrackList";
 import { Artwork } from "@/components/ui/Artwork";
 import { IconButton } from "@/components/ui/Button";
+import { cn } from "@/lib/cn";
 import { routes } from "@/lib/routes";
 import { selectCurrentTrack, usePlayerStore } from "@/stores/player.store";
 import { useProgressStore } from "@/stores/progress.store";
@@ -20,6 +22,7 @@ const openStage = () => useUiStore.getState().setNowPlayingOpen(true);
 function NowPlayingInfo() {
   const track = usePlayerStore(selectCurrentTrack);
   const error = usePlayerStore((s) => s.error);
+  const isPlaying = usePlayerStore((s) => s.isPlaying);
   if (!track) {
     return <p className="label-mono text-subtle">Nothing playing</p>;
   }
@@ -30,9 +33,17 @@ function NowPlayingInfo() {
         type="button"
         onClick={openStage}
         aria-label={`Open stage for ${track.title}`}
-        className="group/art border-border relative shrink-0 overflow-hidden rounded-md border"
+        className={cn(
+          "group/art border-border relative shrink-0 overflow-hidden rounded-md border transition-all duration-300",
+          isPlaying && "ring-primary/40 shadow-[0_0_16px_-3px_var(--primary)] ring-2",
+        )}
       >
         <Artwork image={track.artwork} size="small" className="size-12 rounded-none" eager />
+        {isPlaying && (
+          <span className="bg-background/85 absolute right-1 bottom-1 flex items-center rounded-sm px-1 py-0.5 backdrop-blur-md">
+            <EqualizerIcon className="h-2.5" />
+          </span>
+        )}
         <span className="bg-background/60 absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover/art:opacity-100">
           <Maximize2 className="size-4" />
         </span>
@@ -40,7 +51,10 @@ function NowPlayingInfo() {
       <div className="min-w-0">
         <Link
           href={routes.track(track.id)}
-          className="block truncate text-sm font-medium tracking-[-0.01em] hover:underline"
+          className={cn(
+            "block truncate text-sm font-medium tracking-[-0.01em] transition-colors hover:underline",
+            isPlaying && "text-primary font-semibold",
+          )}
         >
           {track.title}
         </Link>
@@ -75,8 +89,20 @@ function TempoBadge() {
 function DesktopPlayer() {
   const queueOpen = useUiStore((s) => s.queueOpen);
   const hasTrack = usePlayerStore((s) => s.queue.index >= 0);
+  const isPlaying = usePlayerStore((s) => s.isPlaying);
   return (
-    <div className="border-border bg-card/90 fixed inset-x-3 bottom-3 z-40 hidden h-(--player-height) grid-cols-[minmax(0,1fr)_minmax(0,2fr)_minmax(0,1fr)] items-center gap-4 rounded-2xl border px-4 shadow-2xl shadow-black/20 backdrop-blur-xl md:grid">
+    <div
+      className={cn(
+        "border-border bg-card/90 fixed inset-x-3 bottom-3 z-40 hidden h-(--player-height) grid-cols-[minmax(0,1fr)_minmax(0,2fr)_minmax(0,1fr)] items-center gap-4 rounded-2xl border px-4 shadow-2xl shadow-black/20 backdrop-blur-xl transition-all duration-500 md:grid",
+        isPlaying && "border-primary/40 shadow-[0_12px_45px_-12px_var(--primary)]",
+      )}
+    >
+      {isPlaying && (
+        <div
+          aria-hidden
+          className="via-primary/50 pointer-events-none absolute inset-x-12 top-0 h-px bg-gradient-to-r from-transparent to-transparent"
+        />
+      )}
       <NowPlayingInfo />
       <div className="flex max-w-2xl min-w-0 flex-col items-center gap-0.5 justify-self-center sm:w-full">
         <PlayerControls />
@@ -133,11 +159,15 @@ function QueueDrawer() {
 function MiniProgress() {
   const currentTime = useProgressStore((s) => s.currentTime);
   const duration = useProgressStore((s) => s.duration);
+  const isPlaying = usePlayerStore((s) => s.isPlaying);
   const pct = duration > 0 ? Math.min(100, (currentTime / duration) * 100) : 0;
   return (
     <div className="bg-foreground/10 absolute inset-x-0 bottom-0 h-px" aria-hidden>
       <div
-        className="bg-primary h-full shadow-[0_0_8px_var(--primary)]"
+        className={cn(
+          "bg-primary h-full transition-[width] duration-150 ease-out",
+          isPlaying && "shadow-[0_0_10px_var(--primary)]",
+        )}
         style={{ width: `${pct}%` }}
       />
     </div>
@@ -146,19 +176,34 @@ function MiniProgress() {
 
 function MobileMiniPlayer() {
   const track = usePlayerStore(selectCurrentTrack);
+  const isPlaying = usePlayerStore((s) => s.isPlaying);
   if (!track) return null;
   return (
     <div className="fixed inset-x-2 bottom-[calc(var(--mobile-nav-height)+env(safe-area-inset-bottom)+0.375rem)] z-40 md:hidden">
-      <div className="border-border bg-card/90 relative flex h-(--mini-player-height) items-center gap-3 overflow-hidden rounded-lg border px-2 shadow-xl shadow-black/40 backdrop-blur-xl">
+      <div
+        className={cn(
+          "border-border bg-card/90 relative flex h-(--mini-player-height) items-center gap-3 overflow-hidden rounded-lg border px-2 shadow-xl shadow-black/40 backdrop-blur-xl transition-all duration-300",
+          isPlaying && "border-primary/40 shadow-[0_4px_24px_-6px_var(--primary)]",
+        )}
+      >
         <button
           type="button"
           className="flex min-w-0 flex-1 items-center gap-3 text-left"
           aria-label={`Open stage: ${track.title} by ${track.artist.name}`}
           onClick={openStage}
         >
-          <Artwork image={track.artwork} size="small" className="size-10 shrink-0" eager />
+          <div className="relative shrink-0">
+            <Artwork image={track.artwork} size="small" className="size-10 rounded-md" eager />
+            {isPlaying && (
+              <span className="bg-background/85 absolute right-0.5 bottom-0.5 flex items-center rounded-xs px-1 py-0.5 backdrop-blur-md">
+                <EqualizerIcon className="h-2" />
+              </span>
+            )}
+          </div>
           <span className="min-w-0">
-            <span className="block truncate text-sm font-medium">{track.title}</span>
+            <span className={cn("block truncate text-sm font-medium", isPlaying && "text-primary")}>
+              {track.title}
+            </span>
             <span className="text-muted-foreground block truncate text-xs">
               {track.artist.name}
             </span>

@@ -61,22 +61,35 @@ export function TrackCard({
   const isPlaying = useIsTrackPlaying(track.id);
 
   return (
-    <div className={cn(tileClass, "w-40 sm:w-48", isCurrent && "border-primary/50")}>
+    <div
+      className={cn(
+        tileClass,
+        "w-40 sm:w-48 transition-all duration-300",
+        isCurrent && "border-primary/50 shadow-[0_0_24px_-8px_var(--primary)]",
+        isPlaying && "scale-[1.02]",
+      )}
+    >
       <div className="relative">
+        {isPlaying && (
+          <div
+            aria-hidden
+            className="animate-music-pulse pointer-events-none absolute -inset-1 rounded-xl bg-primary/20 blur-sm"
+          />
+        )}
         <Link href={routes.track(track.id)} tabIndex={-1} aria-hidden>
-          <Artwork image={track.artwork} size="medium" className="aspect-square w-full" />
+          <Artwork image={track.artwork} size="medium" className="relative z-1 aspect-square w-full" />
         </Link>
-        <span className="label-mono bg-background/75 text-foreground absolute top-2 left-2 rounded-sm px-1.5 py-1 text-[10px] backdrop-blur-sm">
+        <span className="label-mono bg-background/75 text-foreground absolute top-2 left-2 z-2 rounded-sm px-1.5 py-1 text-[10px] backdrop-blur-sm">
           {String(index + 1).padStart(2, "0")}
         </span>
         {isPlaying && (
-          <span className="bg-background/75 absolute top-2 right-2 rounded-sm px-1.5 py-1 backdrop-blur-sm">
+          <span className="bg-background/85 absolute top-2 right-2 z-2 flex items-center rounded-sm px-1.5 py-1 backdrop-blur-sm">
             <EqualizerIcon className="h-2.5" />
           </span>
         )}
         {track.isPlayable && (
           <PlayOverlayButton
-            className="absolute right-2 bottom-2"
+            className="absolute right-2 bottom-2 z-2"
             playing={isPlaying}
             label={isPlaying ? `Pause ${track.title}` : `Play ${track.title}`}
             onClick={() =>

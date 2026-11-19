@@ -13,6 +13,7 @@ export function ThemePicker({ compact }: { compact?: boolean }) {
   return (
     <Menu modal={false}>
       <MenuTrigger
+        suppressHydrationWarning
         aria-label={`Theme: ${active.name}`}
         title="Change theme"
         className={cn(

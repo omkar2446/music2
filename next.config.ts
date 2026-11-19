@@ -11,6 +11,9 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Allow Next's dev-only HMR socket when opening the app from a 192.168.x.x
+  // LAN address on another device. This setting has no effect in production.
+  allowedDevOrigins: ["192.168.*.*"],
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

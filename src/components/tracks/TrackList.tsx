@@ -15,14 +15,11 @@ import { TrackActionsMenu } from "./TrackActionsMenu";
 
 export function EqualizerIcon({ className }: { className?: string }) {
   return (
-    <span className={cn("flex h-3.5 items-end gap-[2px]", className)} aria-hidden>
-      {[0, 0.25, 0.5].map((delay) => (
-        <span
-          key={delay}
-          className="eq-bar bg-primary h-full w-[3px] rounded-sm"
-          style={{ animationDelay: `${delay}s` }}
-        />
-      ))}
+    <span className={cn("flex h-3.5 items-end gap-[2.5px]", className)} aria-hidden>
+      <span className="eq-bar-1 bg-primary h-full w-[2.5px] rounded-full" />
+      <span className="eq-bar-2 bg-primary h-full w-[2.5px] rounded-full" />
+      <span className="eq-bar-3 bg-primary h-full w-[2.5px] rounded-full" />
+      <span className="eq-bar-4 bg-primary h-full w-[2.5px] rounded-full" />
     </span>
   );
 }

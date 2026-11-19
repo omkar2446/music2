@@ -41,11 +41,18 @@ export function PlayPauseButton({
       disabled={!hasTrack}
       onClick={() => usePlayerStore.getState().togglePlay()}
       className={cn(
-        "bg-primary text-primary-foreground relative flex shrink-0 items-center justify-center rounded-full shadow-[0_0_22px_-6px_var(--primary)] transition-transform hover:scale-105 disabled:opacity-40 disabled:shadow-none disabled:hover:scale-100 [&_svg]:fill-current",
+        "bg-primary text-primary-foreground relative flex shrink-0 items-center justify-center rounded-full shadow-[0_0_24px_-4px_var(--primary)] transition-all duration-200 hover:scale-105 active:scale-95 disabled:opacity-40 disabled:shadow-none disabled:hover:scale-100 [&_svg]:fill-current",
         size === "lg" ? "size-16 [&_svg]:size-7" : "size-9 [&_svg]:size-4",
         className,
       )}
     >
+      {isPlaying && !buffering && (
+        <span
+          aria-hidden
+          className="bg-primary pointer-events-none absolute inset-0 animate-ping rounded-full opacity-20"
+          style={{ animationDuration: "2.6s" }}
+        />
+      )}
       {isPlaying && buffering ? (
         <Loader2 className="animate-spin fill-none!" />
       ) : isPlaying ? (

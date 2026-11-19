@@ -40,7 +40,7 @@ export function PlayOverlayButton({
         className,
       )}
     >
-      {playing ? <Pause /> : <Play className="translate-x-px" />}
+      {playing ? <Pause className="play-symbol" /> : <Play className="play-symbol translate-x-px" />}
     </button>
   );
 }
@@ -66,6 +66,7 @@ export function TrackCard({
         tileClass,
         "w-40 sm:w-48 transition-all duration-300",
         isCurrent && "border-primary/50 shadow-[0_0_24px_-8px_var(--primary)]",
+        isPlaying && "playing-tile",
         isPlaying && "scale-[1.02]",
       )}
     >
@@ -77,7 +78,7 @@ export function TrackCard({
           />
         )}
         <Link href={routes.track(track.id)} tabIndex={-1} aria-hidden>
-          <Artwork image={track.artwork} size="medium" className="relative z-1 aspect-square w-full" />
+          <Artwork image={track.artwork} size="medium" className="artwork-zoom relative z-1 aspect-square w-full" />
         </Link>
         <span className="label-mono bg-background/75 text-foreground absolute top-2 left-2 z-2 rounded-sm px-1.5 py-1 text-[10px] backdrop-blur-sm">
           {String(index + 1).padStart(2, "0")}

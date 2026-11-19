@@ -24,7 +24,7 @@ export function LikeButton({ track, className }: { track: Track; className?: str
         toast(nowLiked ? "Added to Liked Songs" : "Removed from Liked Songs");
       }}
     >
-      <Heart className={cn(liked && "fill-current")} />
+      <Heart className={cn(liked && "heart-pop fill-current")} />
     </IconButton>
   );
 }

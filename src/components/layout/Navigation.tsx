@@ -119,7 +119,7 @@ function SidebarLink({
       aria-current={active ? "page" : undefined}
       title={item.label}
       className={cn(
-        "group relative flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors md:justify-center lg:justify-start",
+        "nav-link group relative flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors md:justify-center lg:justify-start",
         active ? "bg-muted text-foreground" : "text-muted-foreground hover:text-foreground",
       )}
     >
@@ -253,7 +253,7 @@ export function MobileNav() {
             href={item.href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "relative flex min-w-16 flex-col items-center gap-1.5 font-mono text-[10px] tracking-wider uppercase",
+              "mobile-nav-link relative flex min-w-16 flex-col items-center gap-1.5 font-mono text-[10px] tracking-wider uppercase",
               active ? "text-foreground" : "text-subtle",
             )}
           >

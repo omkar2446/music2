@@ -56,9 +56,9 @@ export function PlayPauseButton({
       {isPlaying && buffering ? (
         <Loader2 className="animate-spin fill-none!" />
       ) : isPlaying ? (
-        <Pause />
+        <Pause className="play-symbol" />
       ) : (
-        <Play className="translate-x-px" />
+        <Play className="play-symbol translate-x-px" />
       )}
     </button>
   );

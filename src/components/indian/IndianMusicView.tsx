@@ -82,7 +82,7 @@ export function IndianMusicView() {
               setSelected(language.query);
             }}
             className={cn(
-              "label-mono rounded-full border px-3 py-2 transition-colors",
+              "language-chip label-mono rounded-full border px-3 py-2 transition-colors",
               !input && selected === language.query
                 ? "border-primary/50 bg-primary/10 text-primary"
                 : "border-border bg-card/50 text-muted-foreground hover:text-foreground",

@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/cn";
 import { Skeleton } from "./States";
+import { ScrollReveal } from "./ScrollReveal";
 
 /**
  * Section header in the "spec sheet" style: an oversized faint index numeral,
@@ -75,12 +76,12 @@ export function Shelf({
   children: ReactNode;
 }) {
   return (
-    <section className="animate-rise-in mb-12" aria-label={title}>
+    <ScrollReveal label={title}>
       <SectionHeading title={title} eyebrow={subtitle} index={index} href={href} />
       <div className="-mx-4 flex snap-x scroll-px-4 scrollbar-none gap-3 overflow-x-auto px-4 pb-2 md:-mx-8 md:scroll-px-8 md:px-8">
         {children}
       </div>
-    </section>
+    </ScrollReveal>
   );
 }
 

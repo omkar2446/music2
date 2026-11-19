@@ -7,13 +7,20 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 import { selectCurrentTrack, usePlayerStore } from "@/stores/player.store";
 import { useProgressStore } from "@/stores/progress.store";
 import { Artwork } from "@/components/ui/Artwork";
 import { PlayPauseButton } from "@/components/player/PlayerControls";
 import { EqualizerIcon } from "@/components/tracks/TrackList";
 import { formatDuration } from "@/lib/format";
-import type { QueueItem } from "@/types/music";
+import {
+  clearActiveRoomSession,
+  leaveRoomSession,
+  readActiveRoomSession,
+  setActiveRoomSession,
+} from "@/lib/rooms/client-session";
+import type { QueueItem, RepeatMode } from "@/types/music";
 import type { QueueState } from "@/lib/queue";
 
 type RoomSnapshot = {
@@ -40,11 +47,7 @@ export function RoomsClient({ code: roomCode, isHost }: { code: string; isHost: 
   const code = roomCode.toUpperCase();
   const router = useRouter();
   const [joinCode, setJoinCode] = useState("");
-  const [displayName, setDisplayName] = useState(() => {
-    if (typeof window === "undefined") return "";
-    const saved = sessionStorage.getItem("cadence-room-name");
-    return saved ?? "";
-  });
+  const [displayName, setDisplayName] = useState("");
   const [selfId] = useState(getOrCreateClientId);
   const [copied, setCopied] = useState(false);
   const [listeners, setListeners] = useState(1);
@@ -57,11 +60,25 @@ export function RoomsClient({ code: roomCode, isHost }: { code: string; isHost: 
   const appliedTrack = useRef("");
   const remoteSnapshotRef = useRef<RoomSnapshot | null>(null);
   const enabled = useRef(isHost);
+  const previousRepeat = useRef<RepeatMode | null>(null);
   const track = usePlayerStore(selectCurrentTrack);
   const queue = usePlayerStore((s) => s.queue);
   const isPlaying = usePlayerStore((s) => s.isPlaying);
   const currentTime = useProgressStore((s) => s.currentTime);
   const invite = useMemo(() => inviteOrigin && code ? `${inviteOrigin}/rooms?code=${code}` : "", [inviteOrigin, code]);
+
+  useEffect(() => {
+    const saved = sessionStorage.getItem("cadence-room-name");
+    if (saved) setDisplayName(saved);
+  }, []);
+
+  useEffect(() => {
+    if (code) return;
+    const active = readActiveRoomSession();
+    if (active) {
+      router.replace(`/rooms?code=${encodeURIComponent(active.code)}&host=1`);
+    }
+  }, [code, router]);
 
   useEffect(() => {
     void fetch("/api/rooms/invite").then((response) => response.json()).then((data: { origin: string }) => setInviteOrigin(data.origin)).catch(() => {});
@@ -86,8 +103,6 @@ export function RoomsClient({ code: roomCode, isHost }: { code: string; isHost: 
     if (!code || !displayName.trim() || !selfId) return;
     let source: EventSource | null = null;
     let stopped = false;
-    let unsubscribe = () => {};
-    let publishTimer = 0;
 
     const connect = async () => {
       try {
@@ -99,6 +114,22 @@ export function RoomsClient({ code: roomCode, isHost }: { code: string; isHost: 
         setStatus("Connected · listening together");
         setListeners(data.listeners ?? 1);
         setParticipants(data.participants ?? []);
+        if (isHost) {
+          const player = usePlayerStore.getState();
+          const active = readActiveRoomSession();
+          const previous =
+            active?.code === code && active.clientId === selfId
+              ? active.previousRepeat
+              : player.repeat;
+          previousRepeat.current = previous;
+          setActiveRoomSession({
+            code,
+            clientId: selfId,
+            name: displayName.trim(),
+            previousRepeat: previous,
+          });
+          if (player.repeat !== "all") player.setRepeatMode("all");
+        }
         if (data.snapshot) {
           remoteSnapshotRef.current = data.snapshot;
           setRemoteSnapshot(data.snapshot);
@@ -138,21 +169,6 @@ export function RoomsClient({ code: roomCode, isHost }: { code: string; isHost: 
           source?.close();
         });
 
-        if (isHost) {
-          const publish = () => {
-            const playerState = usePlayerStore.getState();
-            const current = selectCurrentTrack(playerState);
-            void sendAction("sync", selfId, {
-              queue: playerState.queue,
-              isPlaying: playerState.isPlaying && Boolean(current),
-              position: useProgressStore.getState().currentTime,
-              sentAt: Date.now(),
-            }).catch(() => {});
-          };
-          unsubscribe = usePlayerStore.subscribe(publish);
-          publishTimer = window.setInterval(publish, 1600);
-          publish();
-        }
       } catch (cause) {
         if (!stopped) setError(cause instanceof Error ? cause.message : "Couldn't connect to room service.");
       }
@@ -162,8 +178,6 @@ export function RoomsClient({ code: roomCode, isHost }: { code: string; isHost: 
     return () => {
       stopped = true;
       source?.close();
-      unsubscribe();
-      window.clearInterval(publishTimer);
       // Note: Do not call sendAction('leave') here. Effect remounts in React
       // must not terminate active room sessions. Window beforeunload handles page exit.
     };
@@ -173,11 +187,16 @@ export function RoomsClient({ code: roomCode, isHost }: { code: string; isHost: 
   useEffect(() => {
     if (!code || !selfId) return;
     const handleUnload = () => {
+      const player = usePlayerStore.getState();
+      if (isHost && previousRepeat.current !== null && player.repeat === "all") {
+        player.setRepeatMode(previousRepeat.current);
+      }
+      if (isHost) clearActiveRoomSession();
       void sendAction("leave", selfId, undefined, true).catch(() => {});
     };
     window.addEventListener("beforeunload", handleUnload);
     return () => window.removeEventListener("beforeunload", handleUnload);
-  }, [code, selfId, sendAction]);
+  }, [code, isHost, selfId, sendAction]);
 
   // Guest sync logic: follow host's playback & queue
   useEffect(() => {
@@ -190,8 +209,9 @@ export function RoomsClient({ code: roomCode, isHost }: { code: string; isHost: 
       : rawItems && typeof rawItems === "object"
         ? Object.values(rawItems)
         : []) as QueueItem[];
-    const incomingCurrent = items[state.queue.index]?.track;
-    if (!incomingCurrent) {
+    const incomingItem = items[state.queue.index];
+    const incomingCurrent = incomingItem?.track;
+    if (!incomingItem || !incomingCurrent) {
       if (current.queue.items.length > 0 || current.isPlaying) {
         usePlayerStore.setState({ queue: { items: [], original: null, index: -1 }, isPlaying: false });
       }
@@ -199,10 +219,14 @@ export function RoomsClient({ code: roomCode, isHost }: { code: string; isHost: 
     }
 
     const expected = state.position + (state.isPlaying ? Math.max(0, (Date.now() - state.sentAt) / 1000) : 0);
-    const trackChanged = appliedTrack.current !== incomingCurrent.id;
+    const currentItem = current.queue.items[current.queue.index];
+    const itemChanged = currentItem?.uid !== incomingItem.uid;
+    const queueChanged =
+      current.queue.index !== state.queue.index ||
+      current.queue.items.length !== items.length ||
+      current.queue.items.some((item, index) => item.uid !== items[index]?.uid);
 
-    if (trackChanged || current.queue.items.length === 0) {
-      appliedTrack.current = incomingCurrent.id;
+    if (queueChanged || current.queue.items.length === 0) {
       const normalizedQueue: QueueState = {
         items,
         original: Array.isArray(state.queue?.original) ? (state.queue.original as QueueItem[]) : null,
@@ -210,9 +234,14 @@ export function RoomsClient({ code: roomCode, isHost }: { code: string; isHost: 
       };
       usePlayerStore.setState({
         queue: normalizedQueue,
-        isPlaying: enabled.current && state.isPlaying,
-        resumePosition: expected,
+        ...(itemChanged || current.queue.items.length === 0
+          ? { isPlaying: enabled.current && state.isPlaying, resumePosition: expected }
+          : {}),
       });
+    }
+
+    if (itemChanged || current.queue.items.length === 0) {
+      appliedTrack.current = incomingItem.uid;
       useProgressStore.setState({ currentTime: expected, duration: incomingCurrent.duration });
       if (enabled.current) {
         usePlayerStore.getState().seek(expected);
@@ -316,9 +345,14 @@ export function RoomsClient({ code: roomCode, isHost }: { code: string; isHost: 
   };
 
   const leaveRoom = async () => {
-    try {
-      await sendAction("leave", selfId, undefined, true);
-    } catch {}
+    const active = readActiveRoomSession();
+    if (isHost && active?.code === code && active.clientId === selfId) {
+      await leaveRoomSession(active).catch(() => clearActiveRoomSession());
+    } else {
+      try {
+        await sendAction("leave", selfId, undefined, true);
+      } catch {}
+    }
     router.push("/rooms");
   };
 

@@ -78,11 +78,34 @@ export async function TrendingPlaylistsShelf({
 
 /** Indian tracks, singers, and playlists from the JioSaavn catalog. */
 export async function IndianMusicShelf() {
+  const indianQueries = [
+    "Hindi hits",
+    "Punjabi hits",
+    "Tamil hits",
+    "Telugu hits",
+    "Malayalam hits",
+    "Bengali hits",
+    "Marathi hits",
+    "Marathi romantic songs",
+    "Marathi classics",
+    "Marathi devotional songs",
+    "Kannada hits",
+  ];
   const searches = await Promise.allSettled(
-    ["Hindi hits", "Punjabi hits", "Tamil hits"].map((query) =>
-      musicService.searchWith("jiosaavn", query, 10),
-    ),
+    indianQueries.map((query) => musicService.searchWith("jiosaavn", query, 24)),
   );
+  const marathiPlaylists = Array.from(
+    new Map(
+      searches
+        .flatMap((result, index) =>
+          indianQueries[index].startsWith("Marathi") && result.status === "fulfilled"
+            ? result.value.playlists
+            : [],
+        )
+        .map((playlist) => [playlist.id, playlist]),
+    ).values(),
+  ).slice(0, 36);
+  const marathiPlaylistIds = new Set(marathiPlaylists.map((playlist) => playlist.id));
   const tracks = Array.from(
     new Map(
       searches
@@ -97,14 +120,15 @@ export async function IndianMusicShelf() {
         .flatMap((result) => (result.status === "fulfilled" ? result.value.artists : []))
         .map((artist) => [artist.id, artist]),
     ).values(),
-  ).slice(0, 12);
+  ).slice(0, 24);
   const playlists = Array.from(
     new Map(
       searches
         .flatMap((result) => (result.status === "fulfilled" ? result.value.playlists : []))
+        .filter((playlist) => !marathiPlaylistIds.has(playlist.id))
         .map((playlist) => [playlist.id, playlist]),
     ).values(),
-  ).slice(0, 12);
+  ).slice(0, 36);
 
   if (tracks.length + artists.length + playlists.length === 0) {
     const failure = searches.find((result) => result.status === "rejected");
@@ -126,6 +150,11 @@ export async function IndianMusicShelf() {
       {artists.length > 0 && (
         <Shelf title="Indian singers" subtitle="Artists" href={routes.indian}>
           {artists.map((artist) => <ArtistCard key={artist.id} artist={artist} />)}
+        </Shelf>
+      )}
+      {marathiPlaylists.length > 0 && (
+        <Shelf title="Marathi playlists" subtitle="Regional favorites" href={routes.indian}>
+          {marathiPlaylists.map((playlist) => <PlaylistCard key={playlist.id} playlist={playlist} />)}
         </Shelf>
       )}
       {playlists.length > 0 && (

@@ -116,13 +116,20 @@ function TrackRow({
         toggle();
       }}
       className={cn(
-        "group border-border/60 relative grid grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-4 border-b px-3 py-2 transition-colors last:border-b-0 md:grid-cols-[2rem_minmax(0,1fr)_6rem_auto]",
+        "track-row group border-border/60 relative grid grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-4 border-b px-3 py-2 transition-colors last:border-b-0 md:grid-cols-[2rem_minmax(0,1fr)_6rem_auto]",
         disabled ? "opacity-45" : "hover:bg-muted/70 cursor-pointer",
         isCurrent && "bg-primary/[0.06]",
+        isCurrent && isPlaying && "track-row-playing",
       )}
     >
       {isCurrent && (
-        <span aria-hidden className="bg-primary absolute inset-y-2 left-0 w-0.5 rounded-full" />
+        <span
+          aria-hidden
+          className={cn(
+            "bg-primary absolute inset-y-2 left-0 w-0.5 rounded-full",
+            isPlaying && "current-track-marker",
+          )}
+        />
       )}
       <div className="text-subtle relative flex h-8 items-center justify-center font-mono text-xs tabular-nums [&:has(button:focus-visible)>span]:invisible">
         <span className={cn(!disabled && "group-hover:invisible")}>

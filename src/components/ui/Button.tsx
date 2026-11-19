@@ -13,7 +13,7 @@ const VARIANTS: Record<Variant, string> = {
 
 /** Exported so links styled as buttons stay in sync with <Button>. */
 export const buttonBase =
-  "inline-flex h-9 items-center justify-center gap-2 rounded-full px-4 font-mono text-[11px] font-medium tracking-[0.06em] uppercase transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-3.5";
+  "interactive-control inline-flex h-9 items-center justify-center gap-2 rounded-full px-4 font-mono text-[11px] font-medium tracking-[0.06em] uppercase transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:size-3.5";
 
 export function buttonClass(variant: Variant = "secondary") {
   return cn(buttonBase, VARIANTS[variant]);
@@ -22,10 +22,23 @@ export function buttonClass(variant: Variant = "secondary") {
 export function Button({
   variant = "secondary",
   className,
+  type = "button",
   ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant }) {
-  return <button type="button" className={cn(buttonClass(variant), className)} {...props} />;
+}: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: Variant; type?: React.ButtonHTMLAttributes<HTMLButtonElement>['type'] }) {
+  // CSS transition for press animation (scale down on active)
+  return (
+    <button
+      type={type}
+      className={cn(
+        buttonClass(variant),
+        'transition-transform duration-150 active:scale-95',
+        className,
+      )}
+      {...props}
+    />
+  );
 }
+
 
 /** Icon-only button; `label` is required so every control has an accessible name. */
 export function IconButton({
@@ -40,7 +53,7 @@ export function IconButton({
       aria-label={label}
       title={label}
       className={cn(
-        "inline-flex size-9 shrink-0 items-center justify-center rounded-full transition-colors disabled:pointer-events-none disabled:opacity-40 [&_svg]:size-5",
+        "interactive-control inline-flex size-9 shrink-0 items-center justify-center rounded-full transition-colors disabled:pointer-events-none disabled:opacity-40 [&_svg]:size-5",
         active
           ? "text-primary hover:brightness-125"
           : "text-muted-foreground hover:text-foreground",

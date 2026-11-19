@@ -135,7 +135,7 @@ function QueueDrawer() {
   return (
     <aside
       aria-label="Queue"
-      className="animate-fade-in border-border bg-card/95 fixed top-14 right-3 bottom-[calc(var(--player-height)+1.5rem)] z-30 hidden w-96 flex-col rounded-2xl border shadow-2xl shadow-black/20 backdrop-blur-xl md:flex"
+      className="queue-drawer border-border bg-card/95 fixed top-14 right-3 bottom-[calc(var(--player-height)+1.5rem)] z-30 hidden w-96 flex-col rounded-2xl border shadow-2xl shadow-black/20 backdrop-blur-xl md:flex"
     >
       <div className="border-border flex items-center justify-between border-b px-4 py-3">
         <p className="label-mono">
@@ -179,7 +179,7 @@ function MobileMiniPlayer() {
   const isPlaying = usePlayerStore((s) => s.isPlaying);
   if (!track) return null;
   return (
-    <div className="fixed inset-x-2 bottom-[calc(var(--mobile-nav-height)+env(safe-area-inset-bottom)+0.375rem)] z-40 md:hidden">
+    <div className="mini-player-enter fixed inset-x-2 bottom-[calc(var(--mobile-nav-height)+env(safe-area-inset-bottom)+0.375rem)] z-40 md:hidden">
       <div
         className={cn(
           "border-border bg-card/90 relative flex h-(--mini-player-height) items-center gap-3 overflow-hidden rounded-lg border px-2 shadow-xl shadow-black/40 backdrop-blur-xl transition-all duration-300",

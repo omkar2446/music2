@@ -21,9 +21,9 @@ export function Dialog({
   return (
     <RadixDialog.Root open={open} onOpenChange={onOpenChange}>
       <RadixDialog.Portal>
-        <RadixDialog.Overlay className="animate-fade-in fixed inset-0 z-50 bg-black/70" />
+        <RadixDialog.Overlay className="dialog-overlay fixed inset-0 z-50 bg-black/70" />
         <RadixDialog.Content
-          className="animate-fade-in border-border bg-popover fixed top-1/2 left-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl border p-6 shadow-2xl"
+          className="dialog-panel border-border bg-popover fixed top-1/2 left-1/2 z-50 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl border p-6 shadow-2xl"
           {...(!description && { "aria-describedby": undefined })}
         >
           <div className="mb-4 flex items-start justify-between gap-4">

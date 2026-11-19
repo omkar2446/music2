@@ -7,6 +7,7 @@ import { startPlaybackEngine } from "@/lib/playback/engine";
 import { hydrateStores } from "@/stores/hydration";
 import { useToastStore } from "@/stores/toast.store";
 import { cn } from "@/lib/cn";
+import { ActiveRoomRuntime } from "@/components/rooms/ActiveRoomRuntime";
 
 function Toaster() {
   const toasts = useToastStore((s) => s.toasts);
@@ -56,5 +57,10 @@ export function ClientRuntime() {
     };
   }, []);
 
-  return <Toaster />;
+  return (
+    <>
+      <Toaster />
+      <ActiveRoomRuntime />
+    </>
+  );
 }
